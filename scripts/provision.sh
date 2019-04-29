@@ -41,7 +41,7 @@ apt-get update
 
 apt-get install -y build-essential dos2unix gcc git libmcrypt4 libpcre3-dev libpng-dev ntp unzip \
 make python2.7-dev python-pip re2c supervisor unattended-upgrades whois vim libnotify-bin \
-pv cifs-utils mcrypt bash-completion zsh graphviz avahi-daemon
+pv cifs-utils mcrypt bash-completion zsh graphviz avahi-daemon libhiredis-dev
 
 # Set My Timezone
 
@@ -63,6 +63,13 @@ php-xdebug php-pear
 update-alternatives --set php /usr/bin/php7.3
 update-alternatives --set php-config /usr/bin/php-config7.3
 update-alternatives --set phpize /usr/bin/phpize7.3
+
+# Build and Install Phpiredis
+
+git clone https://github.com/nrk/phpiredis.git ./phpiredis
+sudo mv ./phpiredis/ /etc/
+phpize && ./configure --enable-phpiredis
+make --directory=/etc/phpiredis && sudo make --directory=/etc/phpiredis install
 
 # Image Optimizers
 
@@ -374,7 +381,6 @@ sudo rm -rf packages-microsoft-prod.deb
 
 # Update / Override motd
 
-sed -i "s/motd.ubuntu.com/homestead.joeferguson.me/g" /etc/default/motd-news
 rm -rf /etc/update-motd.d/10-help-text
 rm -rf /etc/update-motd.d/50-landscape-sysinfo
 service motd-news restart

@@ -16,6 +16,7 @@ If you know what you are doing:
 - Follow normal [Packer](https://www.packer.io/) practice of building:
 
 ```
+cd ubuntu
 packer build -only=virtualbox-iso ubuntu-18.04-amd64.json
 ```
 
@@ -26,7 +27,7 @@ packer build -only=virtualbox-iso ubuntu-18.04-amd64.json
 - PHP 7.3
 - Nginx
 - MySQL
-- lmm for MySQL or MariaDB database snapshots
+- [lmm](https://github.com/Lullabot/lmm) for MySQL or MariaDB database snapshots
 - Sqlite3
 - PostgreSQL
 - PostGIS
@@ -34,12 +35,13 @@ packer build -only=virtualbox-iso ubuntu-18.04-amd64.json
 - Node (With Yarn, Bower, Grunt, and Gulp)
 - Redis
 - PHPRedis
+- [Phpiredis](https://github.com/nrk/phpiredis)
 - Memcached
 - Beanstalkd
-- Mailhog
+- [Mailhog](https://github.com/mailhog/MailHog)
 - avahi
 - ngrok
 - Xdebug
-- XHProf / Tideways / XHGui
-- Minio
-- wkhtmltopdf
+- [XHProf](https://github.com/phacility/xhprof) / [Tideways](https://tideways.com/) / [XHGui](https://github.com/perftools/xhgui)
+- [Minio](https://github.com/minio/minio)
+- [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf/releases)
