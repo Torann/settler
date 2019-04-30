@@ -67,9 +67,11 @@ update-alternatives --set phpize /usr/bin/phpize7.3
 # Build and Install Phpiredis
 
 git clone https://github.com/nrk/phpiredis.git ./phpiredis
-sudo mv ./phpiredis/ /etc/
-phpize && ./configure --enable-phpiredis
-make --directory=/etc/phpiredis && sudo make --directory=/etc/phpiredis install
+(cd ./phpiredis && phpize && ./configure --enable-phpiredis)
+make --directory=./phpiredis && sudo make --directory=./phpiredis install
+echo "extension=phpiredis.so" >> /etc/php/7.3/mods-available/phpiredis.ini
+sudo phpenmod phpiredis
+rm -rf ./phpiredis
 
 # Image Optimizers
 
