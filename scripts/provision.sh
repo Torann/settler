@@ -284,6 +284,10 @@ xvfb gtk2-engines-pixbuf xfonts-cyrillic \
 xfonts-100dpi xfonts-75dpi xfonts-base \
 xfonts-scalable imagemagick x11-apps
 
+# Tweak some ImageMagick policy values
+
+sudo sed -i -e 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml
+
 # Install Memcached & Beanstalk
 
 apt-get install -y redis-server memcached beanstalkd
