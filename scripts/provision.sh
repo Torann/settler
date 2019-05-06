@@ -176,6 +176,19 @@ sed -i "s/;listen\.mode.*/listen.mode = 0666/" /etc/php/7.3/fpm/pool.d/www.conf
 service nginx restart
 service php7.3-fpm restart
 
+# Add WebSocket Nginx Proxy config
+
+cat > /etc/nginx/conf.d/websocket_proxy.conf << EOF
+upstream websocket {
+    server localhost:3000;
+}
+
+map \$http_upgrade \$connection_upgrade {
+    default Upgrade;
+    '' close;
+}
+EOF
+
 # Add Vagrant User To WWW-Data
 
 usermod -a -G www-data vagrant
