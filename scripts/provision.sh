@@ -19,7 +19,6 @@ locale-gen en_US.UTF-8
 apt-get install -y software-properties-common curl
 
 apt-add-repository ppa:nginx/development -y
-#apt-add-repository ppa:chris-lea/redis-server -y
 apt-add-repository ppa:ondrej/php -y
 
 #curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
@@ -41,7 +40,9 @@ apt-get update
 
 apt-get install -y build-essential dos2unix gcc git libmcrypt4 libpcre3-dev libpng-dev ntp unzip \
 make python2.7-dev python-pip re2c supervisor unattended-upgrades whois vim libnotify-bin \
-pv cifs-utils mcrypt bash-completion zsh graphviz avahi-daemon libhiredis-dev
+pv cifs-utils mcrypt bash-completion zsh graphviz avahi-daemon libhiredis-dev \
+xfonts-cyrillic xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable \
+imagemagick
 
 # Set My Timezone
 
@@ -55,10 +56,10 @@ php7.3-pgsql php7.3-sqlite3 php7.3-gd \
 php7.3-curl \
 php7.3-imap php7.3-mysql php7.3-mbstring \
 php7.3-xml php7.3-zip php7.3-bcmath php7.3-soap \
-php7.3-intl php7.3-readline \
+php7.3-intl php7.3-readline php7.3-ldap \
 php7.3-imagick \
 php7.3-redis \
-php-xdebug php-pear
+php-xdebug php-memcached php-pear
 
 update-alternatives --set php /usr/bin/php7.3
 update-alternatives --set php-config /usr/bin/php-config7.3
@@ -81,16 +82,6 @@ apt-get install -y jpegoptim pngquant
 
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
-
-# Install Laravel Envoy, Installer, and prestissimo for parallel downloads
-
-sudo su vagrant <<'EOF'
-/usr/local/bin/composer global require hirak/prestissimo
-/usr/local/bin/composer global require "laravel/envoy=~1.0"
-/usr/local/bin/composer global require "laravel/installer=~2.0"
-/usr/local/bin/composer global require "laravel/lumen-installer=~1.0"
-/usr/local/bin/composer global require "laravel/spark-installer=~2.0"
-EOF
 
 # Set Some PHP CLI Settings
 sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.3/cli/php.ini
@@ -180,7 +171,7 @@ service php7.3-fpm restart
 
 cat > /etc/nginx/conf.d/websocket_proxy.conf << EOF
 upstream websocket {
-    server localhost:3000;
+    server localhost:8022;
 }
 
 map \$http_upgrade \$connection_upgrade {
@@ -216,30 +207,32 @@ apt-get install -y mysql-server
 # Install LMM for database snapshots
 apt-get install -y thin-provisioning-tools bc
 git clone -b ubuntu-18.04 https://github.com/Lullabot/lmm.git /opt/lmm
+sed -e 's/vagrant-vg/homestead-vg/' -i /opt/lmm/config.sh
 ln -s /opt/lmm/lmm /usr/local/sbin/lmm
 
 # Create a thinly provisioned volume to move the database to. We use 40G as the
 # size leaving ~5GB free for other volumes.
-mkdir -p /vagrant-vg/master
-lvcreate -L 40G -T vagrant-vg/thinpool
+mkdir -p /homestead-vg/master
+sudo lvs
+lvcreate -L 40G -T homestead-vg/thinpool
 
 # Create a 10GB volume for the database. If needed, it can be expanded with
 # lvextend.
-lvcreate -V10G -T vagrant-vg/thinpool -n mysql-master
-mkfs.ext4 /dev/vagrant-vg/mysql-master
-echo "/dev/vagrant-vg/mysql-master\t/vagrant-vg/master\text4\terrors=remount-ro\t0\t1" >> /etc/fstab
+lvcreate -V10G -T homestead-vg/thinpool -n mysql-master
+mkfs.ext4 /dev/homestead-vg/mysql-master
+echo "/dev/homestead-vg/mysql-master\t/homestead-vg/master\text4\terrors=remount-ro\t0\t1" >> /etc/fstab
 mount -a
-chown mysql:mysql /vagrant-vg/master
+chown mysql:mysql /homestead-vg/master
 
 # Move the data directory and symlink it in.
 systemctl stop mysql
-mv /var/lib/mysql/* /vagrant-vg/master
+mv /var/lib/mysql/* /homestead-vg/master
 rm -rf /var/lib/mysql
-ln -s /vagrant-vg/master /var/lib/mysql
+ln -s /homestead-vg/master /var/lib/mysql
 
 # Allow mysqld to access the new data directories.
-echo '/vagrant-vg/ r,' >> /etc/apparmor.d/local/usr.sbin.mysqld
-echo '/vagrant-vg/** rwk,' >> /etc/apparmor.d/local/usr.sbin.mysqld
+echo '/homestead-vg/ r,' >> /etc/apparmor.d/local/usr.sbin.mysqld
+echo '/homestead-vg/** rwk,' >> /etc/apparmor.d/local/usr.sbin.mysqld
 systemctl restart apparmor
 systemctl start mysql
 
@@ -289,13 +282,11 @@ service postgresql restart
 apt-get install -y postgresql-10-postgis-2.4 postgresql-contrib-10
 sudo -u postgres psql -c 'create extension postgis;'
 
-# Install The Chrome Web Driver & Dusk Utilities
+## Install The Chrome Web Driver & Dusk Utilities
 
 apt-get -y install libxpm4 libxrender1 libgtk2.0-0 \
 libnss3 libgconf-2-4 chromium-browser \
-xvfb gtk2-engines-pixbuf xfonts-cyrillic \
-xfonts-100dpi xfonts-75dpi xfonts-base \
-xfonts-scalable imagemagick x11-apps
+xvfb gtk2-engines-pixbuf x11-apps
 
 # Tweak some ImageMagick policy values
 
@@ -363,23 +354,6 @@ chmod +x /usr/local/flyway-4.2.0/flyway
 ln -s /usr/local/flyway-4.2.0/flyway /usr/local/bin/flyway
 rm -rf flyway-commandline-4.2.0-linux-x64.tar.gz
 
-# Install oh-my-zsh
-
-git clone git://github.com/robbyrussell/oh-my-zsh.git /home/vagrant/.oh-my-zsh
-cp /home/vagrant/.oh-my-zsh/templates/zshrc.zsh-template /home/vagrant/.zshrc
-printf "\nsource ~/.bash_aliases\n" | tee -a /home/vagrant/.zshrc
-printf "\nsource ~/.profile\n" | tee -a /home/vagrant/.zshrc
-chown -R vagrant:vagrant /home/vagrant/.oh-my-zsh
-chown vagrant:vagrant /home/vagrant/.zshrc
-
-# Install Golang
-
-golangVersion="1.12.4"
-wget https://dl.google.com/go/go${golangVersion}.linux-amd64.tar.gz -O golang.tar.gz
-tar -C /usr/local -xzf golang.tar.gz go
-printf "\nPATH=\"/usr/local/go/bin:\$PATH\"\n" | tee -a /home/vagrant/.profile
-rm -rf golang.tar.gz
-
 # Install & Configure Postfix]
 
 echo "postfix postfix/mailname string homestead.test" | debconf-set-selections
@@ -388,64 +362,29 @@ apt-get install -y postfix
 sed -i "s/relayhost =/relayhost = [localhost]:1025/g" /etc/postfix/main.cf
 /etc/init.d/postfix reload
 
-# Install .net core
-
-wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
-sudo dpkg -i packages-microsoft-prod.deb
-
-sudo apt-get -y install apt-transport-https
-sudo apt-get update
-sudo apt-get -y install dotnet-sdk-2.1
-sudo rm -rf packages-microsoft-prod.deb
-
 # Update / Override motd
 
 rm -rf /etc/update-motd.d/10-help-text
 rm -rf /etc/update-motd.d/50-landscape-sysinfo
 service motd-news restart
 
-# Install Ruby & RVM
-
-apt-get -y install libssl-dev libyaml-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common \
-libffi-dev rbenv
-
-git clone https://github.com/rbenv/rbenv.git /home/vagrant/.rbenv
-echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> /home/vagrant/.bashrc
-echo 'eval "$(rbenv init -)"' >> /home/vagrant/.bashrc
-
-git clone https://github.com/rbenv/ruby-build.git /home/vagrant/.rbenv/plugins/ruby-build
-echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> /home/vagrant/.bashrc
-
-rbenv install 2.6.1
-rbenv global 2.6.1
-apt-get -y install ruby`ruby -e 'puts RUBY_VERSION[/\d+\.\d+/]'`-dev
-gem install rails -v 5.2.2
-rbenv rehash
-
-# Install socket-wrench Repo
+## Install Ruby & RVM
 #
-#mysql --user="root" --password="secret" -e "CREATE DATABASE socket_wrench character set UTF8mb4 collate utf8mb4_bin;"
-#cd /var/www
-#git clone -b release https://github.com/svpernova09/socket-wrench.git
-#chown vagrant:vagrant /var/www/socket-wrench
-#chmod -R 777 /var/www/socket-wrench/storage
-#chmod -R 777 /var/www/socket-wrench/bootstrap
-#cp /var/www/socket-wrench/.env.example /var/www/socket-wrench/.env
-#/usr/bin/php /var/www/socket-wrench/artisan key:generate
-#/usr/bin/php /var/www/socket-wrench/artisan migrate
-#/usr/bin/php /var/www/socket-wrench/artisan db:seed
+#apt-get -y install libssl-dev libyaml-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common \
+#libffi-dev rbenv
 #
-#sudo tee /etc/supervisor/conf.d/socket-wrench.conf <<EOL
-#[program:socket-wrench]
-#command=/usr/bin/php /var/www/socket-wrench/artisan websockets:serve
-#numprocs=1
-#autostart=true
-#autorestart=true
-#user=vagrant
-#EOL
+#git clone https://github.com/rbenv/rbenv.git /home/vagrant/.rbenv
+#echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> /home/vagrant/.bashrc
+#echo 'eval "$(rbenv init -)"' >> /home/vagrant/.bashrc
 #
-#supervisorctl update
-#supervisorctl start socket-wrench
+#git clone https://github.com/rbenv/ruby-build.git /home/vagrant/.rbenv/plugins/ruby-build
+#echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> /home/vagrant/.bashrc
+#
+#rbenv install 2.6.1
+#rbenv global 2.6.1
+#apt-get -y install ruby`ruby -e 'puts RUBY_VERSION[/\d+\.\d+/]'`-dev
+#gem install rails -v 5.2.2
+#rbenv rehash
 
 # One last upgrade check
 
@@ -456,7 +395,6 @@ apt-get -y upgrade
 apt-get -y autoremove
 apt-get -y clean
 chown -R vagrant:vagrant /home/vagrant
-#chown -R vagrant:vagrant /var/www/socket-wrench
 chown -R vagrant:vagrant /usr/local/bin
 
 # Add Composer Global Bin To Path
