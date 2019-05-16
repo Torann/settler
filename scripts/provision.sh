@@ -21,16 +21,6 @@ apt-get install -y software-properties-common curl
 apt-add-repository ppa:nginx/development -y
 apt-add-repository ppa:ondrej/php -y
 
-#curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-#curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
-
-# gpg: key 5072E1F5: public key "MySQL Release Engineering <mysql-build@oss.oracle.com>" imported
-# apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 5072E1F5
-# sh -c 'echo "deb http://repo.mysql.com/apt/ubuntu/ xenial mysql-5.7" >> /etc/apt/sources.list.d/mysql.list'
-
-#echo 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' >> /etc/apt/sources.list.d/pgdg.list
-#wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-
 curl --silent --location https://deb.nodesource.com/setup_10.x | bash -
 
 # Update Package Lists
@@ -40,25 +30,21 @@ apt-get update
 
 apt-get install -y build-essential dos2unix gcc git libmcrypt4 libpcre3-dev libpng-dev ntp unzip \
 make python2.7-dev python-pip re2c supervisor unattended-upgrades whois vim libnotify-bin \
-pv cifs-utils mcrypt bash-completion zsh graphviz avahi-daemon libhiredis-dev \
-xfonts-cyrillic xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable \
+pv cifs-utils mcrypt bash-completion zsh graphviz avahi-daemon \
+libhiredis-dev xfonts-cyrillic xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable \
 imagemagick
 
 # Set My Timezone
 
-ln -sf /usr/share/zoneinfo/EST /etc/localtime
+ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+
 
 # Install PHP Stuffs
 # Current PHP
 apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-php7.3-cli php7.3-dev \
-php7.3-pgsql php7.3-sqlite3 php7.3-gd \
-php7.3-curl \
-php7.3-imap php7.3-mysql php7.3-mbstring \
-php7.3-xml php7.3-zip php7.3-bcmath php7.3-soap \
-php7.3-intl php7.3-readline php7.3-ldap \
-php7.3-imagick \
-php7.3-redis \
+php7.3-cli php7.3-dev php7.3-pgsql php7.3-sqlite3 php7.3-gd php7.3-curl php7.3-imap php7.3-mysql \
+php7.3-mbstring php7.3-xml php7.3-zip php7.3-bcmath php7.3-soap php7.3-intl php7.3-readline php7.3-ldap \
+php7.3-imagick php7.3-redis \
 php-xdebug php-memcached php-pear
 
 update-alternatives --set php /usr/bin/php7.3
@@ -82,6 +68,12 @@ apt-get install -y jpegoptim pngquant
 
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
+
+# Install Laravel Envoy, Installer, and prestissimo for parallel downloads
+
+sudo su vagrant <<'EOF'
+/usr/local/bin/composer global require hirak/prestissimo
+EOF
 
 # Set Some PHP CLI Settings
 sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.3/cli/php.ini
@@ -164,9 +156,6 @@ sed -i "s/listen\.owner.*/listen.owner = vagrant/" /etc/php/7.3/fpm/pool.d/www.c
 sed -i "s/listen\.group.*/listen.group = vagrant/" /etc/php/7.3/fpm/pool.d/www.conf
 sed -i "s/;listen\.mode.*/listen.mode = 0666/" /etc/php/7.3/fpm/pool.d/www.conf
 
-service nginx restart
-service php7.3-fpm restart
-
 # Add WebSocket Nginx Proxy config
 
 cat > /etc/nginx/conf.d/websocket_proxy.conf << EOF
@@ -179,6 +168,11 @@ map \$http_upgrade \$connection_upgrade {
     '' close;
 }
 EOF
+
+# Reset PHP and Nginx
+
+service nginx restart
+service php7.3-fpm restart
 
 # Add Vagrant User To WWW-Data
 
