@@ -12,7 +12,7 @@ If you know what you are doing:
 
 - Clone [chef/bento](https://github.com/chef/bento) into same top level folder as this repo.
 - Run `./bin/link-to-bento.sh`
-- Run `cd ../bento/ubuntu` and work there for the remainder.
+- Run `cd ../bento/packer_templates/ubuntu` and work there for the remainder.
 - Follow normal [Packer](https://www.packer.io/) practice of building:
 
 ```
@@ -23,6 +23,9 @@ packer build -only=virtualbox-iso ubuntu-18.04-amd64.json
 
 - Ubuntu 18.04
 - Git
+- PHP 7.0
+- PHP 7.1
+- PHP 7.2
 - PHP 7.3
 - Nginx
 - MySQL
