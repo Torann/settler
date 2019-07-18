@@ -16,7 +16,6 @@ If you know what you are doing:
 - Follow normal [Packer](https://www.packer.io/) practice of building:
 
 ```
-cd ubuntu
 packer build -only=virtualbox-iso ubuntu-18.04-amd64.json
 ```
 
