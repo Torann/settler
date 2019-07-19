@@ -370,12 +370,9 @@ apt-get install -y postgresql-10-postgis-2.4 postgresql-contrib-10
 sudo -u postgres psql -c 'create extension postgis;'
 
 ## Install The Chrome Web Driver & Dusk Utilities
-apt-get -y install libxpm4 libxrender1 libgtk2.0-0 \
+apt-get install -y libxrender1 libgtk2.0-0 \
 libnss3 libgconf-2-4 chromium-browser \
 xvfb gtk2-engines-pixbuf x11-apps
-
-# Tweak some ImageMagick policy values
-sudo sed -i -e 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml
 
 # Install Memcached & Beanstalk
 apt-get install -y redis-server memcached beanstalkd
@@ -418,6 +415,9 @@ ttf-wqy-microhei fonts-wqy-zenhei ttf-wqy-zenhei
 wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
 sudo dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb
 rm -rf wkhtmltox_0.12.5-1.bionic_amd64.deb
+
+# Tweak some ImageMagick policy values
+sudo sed -i -e 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml
 
 # Install ngrok
 wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
