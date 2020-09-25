@@ -23,15 +23,13 @@ packer build -only=virtualbox-iso ubuntu-18.04-amd64.json
 
 - Ubuntu 18.04
 - Git
-- PHP 7.0
-- PHP 7.1
-- PHP 7.2
 - PHP 7.3
+- PHP 7.4
 - Nginx
 - MySQL
 - [lmm](https://github.com/Lullabot/lmm) for MySQL or MariaDB database snapshots
 - Sqlite3
-- PostgreSQL
+- PostgreSQL (9, 10, 11, 12)
 - PostGIS
 - Composer
 - Node (With Yarn, Bower, Grunt, and Gulp)

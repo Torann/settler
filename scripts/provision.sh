@@ -27,6 +27,10 @@ END
 
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 
+# Install The Chrome Web Driver & Dusk Utilities
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee -a /etc/apt/sources.list.d/google-chrome.list
+
 # Update Package Lists
 apt-get update
 
@@ -34,7 +38,7 @@ apt-get update
 apt-get install -y build-essential dos2unix gcc git git-lfs libmcrypt4 libpcre3-dev libpng-dev chrony unzip make python2.7-dev \
 python-pip re2c supervisor unattended-upgrades whois vim libnotify-bin pv cifs-utils mcrypt bash-completion zsh \
 graphviz avahi-daemon tshark imagemagick \
-ntp bash-completion libhiredis-dev xfonts-cyrillic xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable
+libhiredis-dev xfonts-cyrillic xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable
 
 # Set My Timezone
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
@@ -302,9 +306,9 @@ service postgresql@12-main restart
 sudo -u postgres psql -c 'create extension postgis;'
 
 ## Install The Chrome Web Driver & Dusk Utilities
-apt-get install -y libxrender1 libgtk2.0-0 \
+apt-get install -y libxpm4 libxrender1 libgtk2.0-0 \
 libnss3 libgconf-2-4 chromium-browser \
-xvfb gtk2-engines-pixbuf x11-apps
+xvfb gtk2-engines-pixbuf x11-apps google-chrome-stable
 
 # Install Redis, Memcached, & Beanstalk
 apt-get install -y redis-server memcached beanstalkd
