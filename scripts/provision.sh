@@ -89,12 +89,12 @@ EOF
 # Set Some PHP CLI Settings
 sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.4/cli/php.ini
 sudo sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.4/cli/php.ini
-sudo sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.4/cli/php.ini
+sudo sed -i "s/memory_limit = .*/memory_limit = 2G/" /etc/php/7.4/cli/php.ini
 sudo sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.4/cli/php.ini
 
 sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.3/cli/php.ini
 sudo sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.3/cli/php.ini
-sudo sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.3/cli/php.ini
+sudo sed -i "s/memory_limit = .*/memory_limit = 2G/" /etc/php/7.3/cli/php.ini
 sudo sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.3/cli/php.ini
 
 # Install Nginx & PHP-FPM
