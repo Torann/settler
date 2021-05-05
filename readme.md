@@ -45,3 +45,5 @@ packer build -only=virtualbox-iso ubuntu-18.04-amd64.json
 - [XHProf](https://github.com/phacility/xhprof) / [Tideways](https://tideways.com/) / [XHGui](https://github.com/perftools/xhgui)
 - [Minio](https://github.com/minio/minio)
 - [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf/releases)
+
+> Built from Laravel Setter v 9.6.0
