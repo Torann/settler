@@ -21,15 +21,15 @@ packer build -only=virtualbox-iso ubuntu-18.04-amd64.json
 
 ## Included
 
-- Ubuntu 18.04
+- Ubuntu 20.04
 - Git
-- PHP 7.3
+- PHP 8.0
 - PHP 7.4
 - Nginx
-- MySQL
+- MySQL 8
 - [lmm](https://github.com/Lullabot/lmm) for MySQL or MariaDB database snapshots
 - Sqlite3
-- PostgreSQL (9, 10, 11, 12)
+- PostgreSQL (9, 10, 11, 12, 13)
 - PostGIS
 - Composer
 - Node (With Yarn, Bower, Grunt, and Gulp)
@@ -41,9 +41,9 @@ packer build -only=virtualbox-iso ubuntu-18.04-amd64.json
 - [Mailhog](https://github.com/mailhog/MailHog)
 - avahi
 - ngrok
-- Xdebug
+- Xdebug 3
 - [XHProf](https://github.com/phacility/xhprof) / [Tideways](https://tideways.com/) / [XHGui](https://github.com/perftools/xhgui)
 - [Minio](https://github.com/minio/minio)
 - [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf/releases)
 
-> Built from Laravel Setter v 9.6.0
+> Built from Laravel Setter v11.1.0
