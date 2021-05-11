@@ -73,7 +73,6 @@ php7.4-enchant php7.4-fpm php7.4-gd php7.4-gmp php7.4-imap php7.4-interbase php7
 php7.4-mbstring php7.4-mysql php7.4-odbc php7.4-opcache php7.4-pgsql php7.4-phpdbg php7.4-pspell php7.4-readline \
 php7.4-snmp php7.4-soap php7.4-sqlite3 php7.4-sybase php7.4-tidy php7.4-xdebug php7.4-xml php7.4-xmlrpc php7.4-xsl php7.4-zip
 
-
 update-alternatives --set php /usr/bin/php8.0
 update-alternatives --set php-config /usr/bin/php-config8.0
 update-alternatives --set phpize /usr/bin/phpize8.0
