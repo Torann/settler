@@ -26,21 +26,33 @@ END
 
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 
-## Install RabbitMQ signing key
-curl -fsSL https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc | sudo apt-key add -
+apt-get install curl gnupg debian-keyring debian-archive-keyring apt-transport-https -y
 
-tee /etc/apt/sources.list.d/bintray.rabbitmq.list <<EOF
-## Installs the latest Erlang 23.x release.
-## Change component to "erlang-22.x" to install the latest 22.x version.
-## "bionic" as distribution name should work for any later Ubuntu or Debian release.
+## Team RabbitMQ's main signing key
+apt-key adv --keyserver "hkps://keys.openpgp.org" --recv-keys "0x0A9AF2115F4687BD29803A206B73A36E6026DFCA"
+## Launchpad PPA that provides modern Erlang releases
+apt-key adv --keyserver "keyserver.ubuntu.com" --recv-keys "F77F1EDA57EBB1CC"
+## PackageCloud RabbitMQ repository
+apt-key adv --keyserver "keyserver.ubuntu.com" --recv-keys "F6609E60DC62814E"
+
+## Add apt repositories maintained by Team RabbitMQ
+tee /etc/apt/sources.list.d/rabbitmq.list <<EOF
+## Provides modern Erlang/OTP releases
+##
+## "focal" as distribution name should work for any reasonably recent Ubuntu or Debian release.
 ## See the release to distribution mapping table in RabbitMQ doc guides to learn more.
-deb https://dl.bintray.com/rabbitmq-erlang/debian bionic erlang
-## Installs latest RabbitMQ release
-deb https://dl.bintray.com/rabbitmq/debian bionic main
+deb http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu focal main
+deb-src http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu focal main
+## Provides RabbitMQ
+##
+## "focal" as distribution name should work for any reasonably recent Ubuntu or Debian release.
+## See the release to distribution mapping table in RabbitMQ doc guides to learn more.
+deb https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ focal main
+deb-src https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ focal main
 EOF
 
 ## Update Package Lists
-apt-get update
+apt-get update -y
 
 # Install The Chrome Web Driver & Dusk Utilities
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
@@ -57,21 +69,33 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 # Install Generic PHP packages
 apt-get install -y --allow-change-held-packages \
-php-imagick php-memcached php-redis php-pear php-xdebug php-dev
+php-imagick php-memcached php-redis php-pear php-xdebug php-dev php-swoole
 
 # PHP 8.0
 apt-get install -y --allow-change-held-packages \
-php8.0 php8.0-bcmath php8.0-bz2 php8.0-cgi php8.0-cli php8.0-common php8.0-curl php8.0-dba php8.0-dev \
-php8.0-enchant php8.0-fpm php8.0-gd php8.0-gmp php8.0-imap php8.0-interbase php8.0-intl php8.0-ldap \
-php8.0-mbstring php8.0-mysql php8.0-odbc php8.0-opcache php8.0-pgsql php8.0-phpdbg php8.0-pspell php8.0-readline \
-php8.0-snmp php8.0-soap php8.0-sqlite3 php8.0-sybase php8.0-tidy php8.0-xdebug php8.0-xml php8.0-xsl php8.0-zip
+php8.0 php8.0-amqp php8.0-apcu php8.0-ast php8.0-bcmath php8.0-bz2 php8.0-cgi php8.0-cli php8.0-common php8.0-curl \
+php8.0-dba php8.0-decimal php8.0-dev php8.0-ds php8.0-enchant php8.0-fpm php8.0-gd php8.0-gearman \
+php8.0-gmp php8.0-gnupg php8.0-grpc php8.0-http php8.0-igbinary php8.0-imagick php8.0-imap php8.0-inotify \
+php8.0-interbase php8.0-intl php8.0-ldap php8.0-lz4 php8.0-mailparse php8.0-maxminddb php8.0-mbstring php8.0-mcrypt \
+php8.0-memcache php8.0-memcached php8.0-mongodb php8.0-msgpack php8.0-mysql php8.0-oauth php8.0-odbc php8.0-opcache \
+php8.0-pcov php8.0-pgsql php8.0-phpdbg php8.0-protobuf php8.0-pspell php8.0-psr php8.0-raphf php8.0-readline \
+php8.0-redis php8.0-rrd php8.0-smbclient php8.0-snmp php8.0-soap php8.0-solr php8.0-sqlite3 php8.0-ssh2 php8.0-swoole \
+php8.0-vips php8.0-xdebug php8.0-xhprof php8.0-xml php8.0-xmlrpc php8.0-xsl \
+php8.0-yaml php8.0-zip php8.0-zmq php8.0-zstd
 
 # PHP 7.4
 apt-get install -y --allow-change-held-packages \
-php7.4 php7.4-bcmath php7.4-bz2 php7.4-cgi php7.4-cli php7.4-common php7.4-curl php7.4-dba php7.4-dev \
-php7.4-enchant php7.4-fpm php7.4-gd php7.4-gmp php7.4-imap php7.4-interbase php7.4-intl php7.4-json php7.4-ldap \
-php7.4-mbstring php7.4-mysql php7.4-odbc php7.4-opcache php7.4-pgsql php7.4-phpdbg php7.4-pspell php7.4-readline \
-php7.4-snmp php7.4-soap php7.4-sqlite3 php7.4-sybase php7.4-tidy php7.4-xdebug php7.4-xml php7.4-xmlrpc php7.4-xsl php7.4-zip
+php7.4 php7.4-cgi php7.4-cli php7.4-common php7.4-curl php7.4-dev php7.4-gd php7.4-gmp php7.4-json php7.4-ldap \
+php7.4-mysql php7.4-odbc php7.4-opcache php7.4-pgsql php7.4-pspell php7.4-readline php7.4-snmp php7.4-sqlite3 \
+php7.4-xml php7.4-xmlrpc php7.4-bcmath php7.4-bz2 php7.4-dba php7.4-enchant php7.4-fpm php7.4-imap \
+php7.4-interbase php7.4-intl php7.4-mbstring php7.4-phpdbg php7.4-soap php7.4-xsl php7.4-zip \
+php7.4-amqp php7.4-apcu php7.4-apcu-bc php7.4-ast php7.4-decimal php7.4-ds php7.4-facedetect php7.4-gearman \
+php7.4-geoip php7.4-gnupg php7.4-grpc php7.4-http php7.4-igbinary php7.4-imagick php7.4-inotify php7.4-lua \
+php7.4-lz4 php7.4-mailparse php7.4-maxminddb php7.4-mcrypt php7.4-memcache php7.4-memcached php7.4-mongodb \
+php7.4-msgpack php7.4-oauth php7.4-pcov php7.4-pinba php7.4-propro php7.4-protobuf php7.4-ps \
+php7.4-psr php7.4-radius php7.4-raphf php7.4-redis php7.4-rrd php7.4-smbclient php7.4-solr php7.4-ssh2 php7.4-stomp \
+php7.4-swoole php7.4-tideways php7.4-uopz php7.4-uploadprogress php7.4-vips php7.4-xdebug php7.4-xhprof \
+php7.4-yaml php7.4-zmq php7.4-zstd
 
 update-alternatives --set php /usr/bin/php8.0
 update-alternatives --set php-config /usr/bin/php-config8.0

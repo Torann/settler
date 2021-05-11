@@ -46,4 +46,4 @@ packer build -only=virtualbox-iso ubuntu-20.04-amd64.json
 - [Minio](https://github.com/minio/minio)
 - [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf/releases)
 
-> Built from Laravel Setter v11.1.0
+> Built from Laravel Setter v11.2.0
