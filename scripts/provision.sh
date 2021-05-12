@@ -51,12 +51,12 @@ deb https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ focal main
 deb-src https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ focal main
 EOF
 
-## Update Package Lists
-apt-get update -y
-
 # Install The Chrome Web Driver & Dusk Utilities
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee -a /etc/apt/sources.list.d/google-chrome.list
+
+## Update Package Lists
+apt-get update -y
 
 # Install Some Basic Packages
 apt-get install -y build-essential dos2unix gcc git git-lfs libmcrypt4 libpcre3-dev libpng-dev chrony unzip make \
