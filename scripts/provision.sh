@@ -78,7 +78,7 @@ php8.0-dba php8.0-decimal php8.0-dev php8.0-ds php8.0-enchant php8.0-fpm php8.0-
 php8.0-gmp php8.0-gnupg php8.0-grpc php8.0-http php8.0-igbinary php8.0-imagick php8.0-imap php8.0-inotify \
 php8.0-interbase php8.0-intl php8.0-ldap php8.0-lz4 php8.0-mailparse php8.0-maxminddb php8.0-mbstring php8.0-mcrypt \
 php8.0-memcache php8.0-memcached php8.0-mongodb php8.0-msgpack php8.0-mysql php8.0-oauth php8.0-odbc php8.0-opcache \
-php8.0-pcov php8.0-pgsql php8.0-phpdbg php8.0-protobuf php8.0-pspell php8.0-psr php8.0-raphf php8.0-readline \
+php8.0-pcov php8.0-pgsql php8.0-phpdbg php8.0-protobuf php8.0-pspell php8.0-raphf php8.0-readline \
 php8.0-redis php8.0-rrd php8.0-smbclient php8.0-snmp php8.0-soap php8.0-solr php8.0-sqlite3 php8.0-ssh2 php8.0-swoole \
 php8.0-vips php8.0-xdebug php8.0-xhprof php8.0-xml php8.0-xmlrpc php8.0-xsl \
 php8.0-yaml php8.0-zip php8.0-zmq php8.0-zstd
@@ -93,7 +93,7 @@ php7.4-amqp php7.4-apcu php7.4-apcu-bc php7.4-ast php7.4-decimal php7.4-ds php7.
 php7.4-geoip php7.4-gnupg php7.4-grpc php7.4-http php7.4-igbinary php7.4-imagick php7.4-inotify php7.4-lua \
 php7.4-lz4 php7.4-mailparse php7.4-maxminddb php7.4-mcrypt php7.4-memcache php7.4-memcached php7.4-mongodb \
 php7.4-msgpack php7.4-oauth php7.4-pcov php7.4-pinba php7.4-propro php7.4-protobuf php7.4-ps \
-php7.4-psr php7.4-radius php7.4-raphf php7.4-redis php7.4-rrd php7.4-smbclient php7.4-solr php7.4-ssh2 php7.4-stomp \
+php7.4-radius php7.4-raphf php7.4-redis php7.4-rrd php7.4-smbclient php7.4-solr php7.4-ssh2 php7.4-stomp \
 php7.4-swoole php7.4-tideways php7.4-uopz php7.4-uploadprogress php7.4-vips php7.4-xdebug php7.4-xhprof \
 php7.4-yaml php7.4-zmq php7.4-zstd
 
